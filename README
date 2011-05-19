@@ -1,0 +1,3 @@
+PING NOTIFY DAEMON
+
+Runs a ping every 30 seconds, notifies user of internal/external network connectivity status.
