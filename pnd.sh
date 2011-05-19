@@ -7,6 +7,7 @@
 # CONFIGURATION
 internal='ccss.carleton.ca'
 external='google.com'
+log='/home2bak/spratt/local/var/log/pnd.log'
 ################################################################################
 # only modify past this line if you know what you're doing
 true=0
@@ -20,7 +21,9 @@ do
     declare -i lastRunTime=runTime
     declare -i runTime=`date +%H`
     if [ $lastRunTime -gt $runTime ]; then
-	mv /home2bak/spratt/local/var/log/pnd.log /home2bak/spratt/local/var/log/pnd.log.`date +%s`
+	if [ -e $log ]; then
+	    mv $log $log.`date +%s`
+	fi
 	echo `date`: pnd started > /home2bak/spratt/local/var/log/pnd.log
     fi
     # check external
