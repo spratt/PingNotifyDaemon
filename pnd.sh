@@ -1,19 +1,30 @@
+#!/bin/bash
 ################################################################################
 # Ping Notify Daemon
 #
 # For license information, see file: LICENSE
 ################################################################################
-#!/bin/bash
+# CONFIGURATION
+internal='ccss.carleton.ca'
+external='google.com'
+################################################################################
+# only modify past this line if you know what you're doing
 true=0
 false=1
 eWasUp=$false
 iWasUp=$false
 # log script start
-echo `date`: pnd started >> /home2bak/spratt/local/var/log/pnd.log
+declare -i runTime=24
 while true
 do
+    declare -i lastRunTime=runTime
+    declare -i runTime=`date +%H`
+    if [ $lastRunTime -gt $runTime ]; then
+	mv /home2bak/spratt/local/var/log/pnd.log /home2bak/spratt/local/var/log/pnd.log.`date +%s`
+	echo `date`: pnd started > /home2bak/spratt/local/var/log/pnd.log
+    fi
     # check external
-    ping -q -c 1 google.com > /dev/null 2> /dev/null
+    ping -q -c 1 $external > /dev/null 2> /dev/null
     eIsUp=$?
     # log external
     if [ ! $eWasUp -eq $eIsUp ]; then
@@ -34,7 +45,7 @@ do
 	fi
     fi
     # check internal
-    ping -q -c 1 ccss.carleton.ca > /dev/null 2> /dev/null
+    ping -q -c 1 $internal > /dev/null 2> /dev/null
     iIsUp=$?
     # log internal
     if [ ! $iWasUp -eq $iIsUp ]; then
