@@ -24,7 +24,7 @@ do
 	if [ -e $log ]; then
 	    mv $log $log.`date +%s`
 	fi
-	echo `date`: pnd started > /home2bak/spratt/local/var/log/pnd.log
+	echo `date`: pnd started > $log
     fi
     # check external
     ping -q -c 1 $external > /dev/null 2> /dev/null
@@ -36,14 +36,14 @@ do
 	    date=`date`
 	    notifyString="external came up"
 	    notify-send "$notifyString" "$date"
-	    echo $date: $notifyString >> /home2bak/spratt/local/var/log/pnd.log
+	    echo $date: $notifyString >> $log
 	    eWasUp=$true
 	else
 	    # external went down
 	    date=`date`
 	    notifyString="external went down"
 	    notify-send -c "$notifyString" "$date"
-	    echo $date: $notifyString >> /home2bak/spratt/local/var/log/pnd.log
+	    echo $date: $notifyString >> $log
 	    eWasUp=$false
 	fi
     fi
@@ -57,14 +57,14 @@ do
 	    date=`date`
 	    notifyString="internal came up"
 	    notify-send "$notifyString" "$date"
-	    echo $date: $notifyString >> /home2bak/spratt/local/var/log/pnd.log
+	    echo $date: $notifyString >> $log
 	    iWasUp=$true
 	else
 	    # internal went down
 	    date=`date`
 	    notifyString="internal went down"
 	    notify-send "$notifyString" "$date"
-	    echo $date: $notifyString >> /home2bak/spratt/local/var/log/pnd.log
+	    echo $date: $notifyString >> $log
 	    iWasUp=$false
 	fi
     fi
