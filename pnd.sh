@@ -44,9 +44,9 @@ do
 	    notifyString="external went down"
 	    notify-send -c "$notifyString" "$date"
 	    echo $date: $notifyString >> $log
-	    echo =============== BEGIN TRACEROUTE ==============
+	    echo =============== BEGIN TRACEROUTE ============== >> $log
 	    traceroute $external >> $log
-	    echo ================ END TRACEROUTE ===============
+	    echo ================ END TRACEROUTE =============== >> $log
 	    eWasUp=$false
 	fi
     fi
