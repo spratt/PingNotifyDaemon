@@ -12,8 +12,6 @@ log='/home2bak/spratt/local/var/log/pnd.log'
 # only modify past this line if you know what you're doing
 true=0
 false=1
-eWasUp=$false
-iWasUp=$false
 # log script start
 declare -i runTime=24
 while true
@@ -25,6 +23,8 @@ do
 	    mv $log $log.`date +%s`
 	fi
 	echo `date`: pnd started > $log
+	eWasUp=$false
+	iWasUp=$false
     fi
     # check external
     ping -q -c 1 $external > /dev/null 2> /dev/null
@@ -44,6 +44,9 @@ do
 	    notifyString="external went down"
 	    notify-send -c "$notifyString" "$date"
 	    echo $date: $notifyString >> $log
+	    echo =============== BEGIN TRACEROUTE ==============
+	    traceroute $external >> $log
+	    echo ================ END TRACEROUTE ===============
 	    eWasUp=$false
 	fi
     fi
