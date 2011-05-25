@@ -17,7 +17,7 @@ declare -i runTime=24
 while true
 do
     declare -i lastRunTime=runTime
-    declare -i runTime=`date +%H`
+    runTime=`date +%H`
     if [ $lastRunTime -gt $runTime ]; then
 	if [ -e $log ]; then
 	    mv $log $log.`date +%s`
@@ -42,11 +42,11 @@ do
 	    # external went down
 	    date=`date`
 	    notifyString="external went down"
-	    notify-send -c "$notifyString" "$date"
+	    notify-send "$notifyString" "$date"
 	    echo $date: $notifyString >> $log
 	    echo =============== BEGIN TRACEROUTE ============== >> $log
-	    traceroute $external >> $log
-	    echo ================ END TRACEROUTE =============== >> $log
+	    tr.sh $external 10 >> $log
+	    echo === TRACEROUTE ENDED AT `date` === >> $log
 	    eWasUp=$false
 	fi
     fi
