@@ -16,12 +16,16 @@ false=1
 declare -i runTime=24
 while true
 do
+    # save the last runtime and determine the hour of the day
     declare -i lastRunTime=runTime
     hourString=`date +%H`
+    # if hours are in the format 0x, strip off the leading 0
     if [ ${hourString:0:1} -eq 0 ]; then
 	hourString=${hourString:1:1}
     fi
     runTime=hourString
+    # if the hour of the day is less than the previous hour,
+    # midnight was just passed so archive yesterday's log
     if [ $lastRunTime -gt $runTime ]; then
 	if [ -e $log ]; then
 	    mv $log $log.`date +%s`
