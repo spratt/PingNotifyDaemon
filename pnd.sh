@@ -17,7 +17,11 @@ declare -i runTime=24
 while true
 do
     declare -i lastRunTime=runTime
-    runTime=`date +%H`
+    hourString=`date +%H`
+    if [ ${hourString:0:1} -eq 0 ]; then
+	hourString=${hourString:1:1}
+    fi
+    runTime=hourString
     if [ $lastRunTime -gt $runTime ]; then
 	if [ -e $log ]; then
 	    mv $log $log.`date +%s`
@@ -45,7 +49,7 @@ do
 	    notify-send "$notifyString" "$date"
 	    echo $date: $notifyString >> $log
 	    echo =============== BEGIN TRACEROUTE ============== >> $log
-	    tr.sh $external 10 >> $log
+	    tr.sh $external 15 >> $log
 	    echo === TRACEROUTE ENDED AT `date` === >> $log
 	    eWasUp=$false
 	fi
