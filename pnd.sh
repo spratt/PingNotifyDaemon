@@ -2,6 +2,7 @@
 ################################################################################
 # Ping Notify Daemon
 #
+# For project information, see file: README
 # For license information, see file: LICENSE
 ################################################################################
 # CONFIGURATION
