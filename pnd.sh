@@ -14,9 +14,18 @@ log='/home2bak/spratt/local/var/log/pnd.log'
 true=0
 false=1
 # log script start
+declare -i timeWentDown=0
+declare -i timeCameUp=0
+declare -i downTime=0
+declare -i totalDownTime=0
 declare -i runTime=24
-while true
-do
+function ping_external() {
+    ping -q -c 1 $external > /dev/null 2> /dev/null
+}
+function ping_internal() {
+    ping -q -c 1 $internal > /dev/null 2> /dev/null
+}
+while sleep 5; do
     # save the last runtime and determine the hour of the day
     declare -i lastRunTime=runTime
     runTime=`date +%k`
@@ -27,24 +36,34 @@ do
 	    mv $log $log.`date +%s`
 	fi
 	echo `date`: pnd started > $log
+	totalDownTime=0
+	timeWentDown=0
 	eWasUp=$false
 	iWasUp=$false
     fi
     # check external
-    ping -q -c 1 $external > /dev/null 2> /dev/null
+    ping_external || ping_external || ping_external
     eIsUp=$?
     # log external
     if [ ! $eWasUp -eq $eIsUp ]; then
 	if [ $eIsUp -eq $true ]; then
 	    # external came up
 	    date=`date`
+	    timeCameUp=`date +%s`
 	    notifyString="external came up"
 	    notify-send "$notifyString" "$date"
 	    echo $date: $notifyString >> $log
+	    if [ $timeWentDown -gt 0 ]; then
+		downTime=$((timeCameUp - timeWentDown))
+		totalDownTime=$(( totalDownTime + downTime))
+		echo Network was down for $downTime seconds >> $log
+		echo Total downtime today: $totalDownTime seconds >> $log
+	    fi
 	    eWasUp=$true
 	else
 	    # external went down
 	    date=`date`
+	    timeWentDown=`date +%s`
 	    notifyString="external went down"
 	    notify-send "$notifyString" "$date"
 	    echo $date: $notifyString >> $log
@@ -54,8 +73,7 @@ do
 	    eWasUp=$false
 	fi
     fi
-    # check internal
-    ping -q -c 1 $internal > /dev/null 2> /dev/null
+    ping_internal || ping_internal || ping_internal
     iIsUp=$?
     # log internal
     if [ ! $iWasUp -eq $iIsUp ]; then
@@ -75,6 +93,4 @@ do
 	    iWasUp=$false
 	fi
     fi
-    # sleep for 30 seconds
-    sleep 30
 done
